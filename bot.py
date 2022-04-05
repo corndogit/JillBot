@@ -32,21 +32,26 @@ async def on_message(message):
         )
         about_me.set_thumbnail(url="https://avatars.githubusercontent.com/u/101812777?v=4")
         about_me.add_field(name="Prefix", value="!")
-        about_me.add_field(name="Commands", value="`hello`, `about`", inline=False)
+        about_me.add_field(name="Commands", value="`hello`, `about`, `weather <location>`", inline=False)
         await message.channel.send(embed=about_me)
 
     if message.content.startswith('!weather'):
-        location = str(message).split().pop(0).join(' ')
+        command = message.content.split(' ')
+        command.remove('!weather')
+        location = ' '.join(command)
+        await message.channel.send(f"Getting weather for {location}...")
+
         weather_data = libs.weather.get_weather(location)
 
         if weather_data == "API_Error":
             await message.channel.send("API error - your request produced no suggestions.")
 
         else:
-            embed = discord.Embed(title="Showing results for {location}", url="https://github.com/corndogit/weather-cli/")
+            embed = discord.Embed(title=f"Showing results for {weather_data['City']}, {weather_data['Country']}", url="https://github.com/corndogit/weather-cli/")
             embed.add_field(name="Type", value=weathercodes[str(weather_data['SignificantWeatherCode'])], inline=False)
-            embed.add_field(name="Max Temperature", value=f"{round(weather_data['MaxTemperature'])} degrees Celsius", inline=True)
-            embed.add_field(name="Min Temperature", value=f"{round(weather_data['MinTemperature'])} degrees Celsius", inline=True)
+            embed.set_thumbnail(url="https://corndog.s-ul.eu/OZbm1tH1.jpg")
+            embed.add_field(name="Max Temperature", value=f"{round(weather_data['MaxTemperature'])}\u00B0C", inline=True)
+            embed.add_field(name="Min Temperature", value=f"{round(weather_data['MinTemperature'])}\u00B0C", inline=True)
             embed.add_field(name="Chance of Precipitation", value=f"{weather_data['ChanceOfPrecipitation']}%", inline=True)
             embed.add_field(name="Wind Speed", value=f"{round(float(weather_data['WindSpeed'] / 0.44704), 1)} mph", inline=True)
             embed.add_field(name="Max UV Index Rating", value=f"{weather_data['MaxUvIndex']} ({decode_uv_index(weather_data['MaxUvIndex'])})", inline=True)

@@ -18,16 +18,11 @@ def get_weather(location):
 
     geocode_res = geocode_conn.getresponse()
     geocode_json = json.loads(geocode_res.read())  # reads JSON file from response
-    with open('dump.json', 'wb') as datahub_dump:
-        datahub_dump.write(geocode_json)
-        datahub_dump.close()
 
     if 'error' in geocode_json:
         return 'API_Error'
 
     geocode_values = (
-        geocode_json['standard']['city'],
-        geocode_json['standard']['countryname'],
         geocode_json['latt'],
         geocode_json['longt']
     )
@@ -44,8 +39,8 @@ def get_weather(location):
     datahub_params = urllib.parse.urlencode({
         'excludeParameterMetadata': 'true',
         'includeLocationName': 'true',
-        'latitude': geocode_values[-2],
-        'longitude': geocode_values[-1]
+        'latitude': geocode_values[0],
+        'longitude': geocode_values[1]
     })
 
     datahub_conn.request('GET',
@@ -59,7 +54,8 @@ def get_weather(location):
     time_series = datahub_json['features'][0]['properties']['timeSeries'][1]
 
     weather_data = {
-        "TimeOfModel": time_series['time'],
+        "City": geocode_json['standard']['city'],
+        "Country": geocode_json['standard']['countryname'],
         "SignificantWeatherCode": time_series['daySignificantWeatherCode'],
         "MaxTemperature": time_series['dayUpperBoundMaxTemp'],  # degrees Celsius
         "MinTemperature": time_series['dayLowerBoundMaxTemp'],
