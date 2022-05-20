@@ -21,9 +21,11 @@ async def on_message(message):
     if message.author == client.user:
         return
 
+    # Hello World
     if message.content.startswith('!hello'):
         await message.reply('Hello there!')
 
+    # About
     if message.content.startswith('!about'):
         about_me = discord.Embed(
             title="About",
@@ -35,6 +37,12 @@ async def on_message(message):
         about_me.add_field(name="Commands", value="`hello`, `about`, `weather <location>`", inline=False)
         await message.channel.send(embed=about_me)
 
+    # Video link fixer
+    if message.content.startswith('https://media.discordapp.net'):
+        new_link = message.content.replace("https://media.discordapp.net", "https://cdn.discordapp.com")
+        await message.reply(f"Fixed your media link: {new_link}")
+
+    # weather-cli implementation
     if message.content.startswith('!weather'):
         command = message.content.split(' ')
         command.remove('!weather')
