@@ -51,7 +51,10 @@ def get_weather(location):
     datahub_res = datahub_conn.getresponse()
     datahub_json = json.loads(datahub_res.read())
 
-    time_series = datahub_json['features'][0]['properties']['timeSeries'][1]
+    try:
+        time_series = datahub_json['features'][0]['properties']['timeSeries'][1]
+    except KeyError:
+        return 'API_Error'
 
     weather_data = {
         "City": geocode_json['standard']['city'],
