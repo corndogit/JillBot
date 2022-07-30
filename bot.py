@@ -34,13 +34,25 @@ async def on_message(message):
         )
         about_me.set_thumbnail(url="https://avatars.githubusercontent.com/u/101812777?v=4")
         about_me.add_field(name="Prefix", value="!")
-        about_me.add_field(name="Commands", value="`hello`, `about`, `weather <location>`", inline=False)
+        about_me.add_field(name="Commands", value="`hello`, `about`, `weather <location>`, `4panel`", inline=False)
         await message.channel.send(embed=about_me)
 
     # Video link fixer
-    if message.content.startswith('https://media.discordapp.net'):
+    if message.content.startswith('https://media.discordapp.net') and message.content.endswith('.mp4'):
         new_link = message.content.replace("https://media.discordapp.net", "https://cdn.discordapp.com")
         await message.reply(f"Fixed your media link: {new_link}")
+
+    # Uses Discord exploit to make a 4 panel thing from Discord image links
+    if message.content.startswith('!4panel'):
+        link = message.content.split('!4panel ')[1]
+        if not link.startswith('https://'):
+            await message.channel.send('Invalid image link - must start with https://')
+        else:
+            link_content = link.split('https://')[1]
+            await message.channel.send(f'https://{link_content}\n' +
+                                       f'https://\\{link_content}\n' +
+                                       f'https://\\\\{link_content}\n' +
+                                       f'https://\\\\\\{link_content}\n')
 
     # weather-cli implementation
     if message.content.startswith('!weather'):
