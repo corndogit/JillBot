@@ -40,14 +40,14 @@ async def about(inter):
 @jillbot.slash_command(
     description="Does a trick with images uploaded to cdn.discordapp.com that makes them display 4 times")
 async def funny(inter, link: str):
-    if not link.startswith('https://'):
-        await inter.response.send_message('Invalid image link - must start with https://')
+    if not link.startswith("https://"):
+        await inter.response.send_message("Invalid image link - must start with https://")
     else:
         link_content = link.split('https://')[1]
-        await inter.response.send_message(f'https://{link_content}\n' +
-                                   f'https://\\{link_content}\n' +
-                                   f'https://\\\\{link_content}\n' +
-                                   f'https://\\\\\\{link_content}\n')
+        await inter.response.send_message(f"https://{link_content}\n" +
+                                          f"https://\\{link_content}\n" +
+                                          f"https://\\\\{link_content}\n" +
+                                          f"https://\\\\\\{link_content}\n")
 
 
 @jillbot.slash_command(description="Displays a small weather report for the city provided.")
