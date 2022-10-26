@@ -39,11 +39,6 @@ async def on_message(message):
         about_me.add_field(name="Commands", value="`hello`, `about`, `weather <location>`, `4panel`", inline=False)
         await message.channel.send(embed=about_me)
 
-    # Video link fixer
-    if message.content.startswith('https://media.discordapp.net') and message.content.endswith('.mp4'):
-        new_link = message.content.replace("https://media.discordapp.net", "https://cdn.discordapp.com")
-        await message.reply(f"Fixed your media link: {new_link}")
-
     # Uses Discord exploit to make a 4 panel thing from Discord image links
     if message.content.startswith('!4panel'):
         link = message.content.split('!4panel ')[1]
