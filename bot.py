@@ -64,14 +64,27 @@ async def on_message(message):
             await message.channel.send("API error - your request produced no suggestions.")
 
         else:
-            embed = discord.Embed(title=f"Showing results for {weather_data['City']}, {weather_data['Country']}", url="https://github.com/corndogit/weather-cli/")
-            embed.add_field(name="Type", value=weathercodes[str(weather_data['SignificantWeatherCode'])], inline=False)
+            embed = discord.Embed(title=f"Showing results for {weather_data['City']}, {weather_data['Country']}",
+                                  url="https://github.com/corndogit/weather-cli/")
+            embed.add_field(name="Type",
+                            value=weathercodes[str(weather_data['SignificantWeatherCode'])],
+                            inline=False)
             embed.set_thumbnail(url="https://corndog.s-ul.eu/OZbm1tH1.jpg")
-            embed.add_field(name="Max Temperature", value=f"{round(weather_data['MaxTemperature'])}\u00B0C", inline=True)
-            embed.add_field(name="Min Temperature", value=f"{round(weather_data['MinTemperature'])}\u00B0C", inline=True)
-            embed.add_field(name="Chance of Precipitation", value=f"{weather_data['ChanceOfPrecipitation']}%", inline=True)
-            embed.add_field(name="Wind Speed", value=f"{round(float(weather_data['WindSpeed'] / 0.44704), 1)} mph", inline=True)
-            embed.add_field(name="Max UV Index Rating", value=f"{weather_data['MaxUvIndex']} ({decode_uv_index(weather_data['MaxUvIndex'])})", inline=True)
+            embed.add_field(name="Max Temperature",
+                            value=f"{round(weather_data['MaxTemperature'])}\u00B0C",
+                            inline=True)
+            embed.add_field(name="Min Temperature",
+                            value=f"{round(weather_data['MinTemperature'])}\u00B0C",
+                            inline=True)
+            embed.add_field(name="Chance of Precipitation",
+                            value=f"{weather_data['ChanceOfPrecipitation']}%",
+                            inline=True)
+            embed.add_field(name="Wind Speed",
+                            value=f"{round(float(weather_data['WindSpeed'] / 0.44704), 1)} mph",
+                            inline=True)
+            embed.add_field(name="Max UV Index Rating",
+                            value=f"{weather_data['MaxUvIndex']} ({decode_uv_index(weather_data['MaxUvIndex'])})",
+                            inline=True)
             embed.set_footer(text="Data collected from Met Office Weather DataHub")
             await message.channel.send(embed=embed)
 
