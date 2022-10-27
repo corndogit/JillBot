@@ -34,7 +34,24 @@ weathercodes = {
 }
 
 
-def decode_uv_index(uv_index):
+def kmh_to_mph(wind_speed: float):
+    """
+    Converts wind speed in kilometres per hour to miles per hour.
+
+    :param wind_speed float of the wind speed in km/h
+    :returns: float of the wind speed in mph
+    """
+    conversion_ratio = 0.44704
+    return wind_speed / conversion_ratio
+
+
+def decode_uv_index(uv_index: int):
+    """
+    Converts UV index number to a description of the severity.
+
+    :param uv_index: UV index value
+    :return: String of the description
+    """
     if uv_index in range(3):
         return 'Low exposure'
     elif uv_index in range(3, 6):

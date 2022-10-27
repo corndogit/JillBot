@@ -3,7 +3,7 @@ import os
 import urllib.error
 from weatherlib import weather
 from qrlib.qr_codec import make_qr_code, decode_qr_code
-from weatherlib.weathercodes import decode_uv_index, weathercodes
+from weatherlib.weathercodes import decode_uv_index, weathercodes, kmh_to_mph
 from urllib.request import urlopen
 import disnake
 from disnake.ext import commands
@@ -80,7 +80,7 @@ async def weather(inter, city: str):
                         value=f"{weather_data['ChanceOfPrecipitation']}%",
                         inline=True)
         embed.add_field(name="Wind Speed",
-                        value=f"{round(float(weather_data['WindSpeed'] / 0.44704), 1)} mph",
+                        value=f"{round(kmh_to_mph(weather_data['WindSpeed']), 1)} mph",
                         inline=True)
         embed.add_field(name="Max UV Index Rating",
                         value=f"{weather_data['MaxUvIndex']} ({decode_uv_index(weather_data['MaxUvIndex'])})",
