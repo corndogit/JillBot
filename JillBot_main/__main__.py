@@ -1,10 +1,9 @@
 import io
 import os
 import urllib.error
-
-import libs.weather
-import libs.qr_codec
-from libs.doc.weathercodes import weathercodes, decode_uv_index
+from weatherlib import weather
+from qrlib.qr_codec import make_qr_code, decode_qr_code
+from weatherlib.weathercodes import decode_uv_index, weathercodes
 from urllib.request import urlopen
 import disnake
 from disnake.ext import commands
@@ -36,13 +35,15 @@ async def about(inter):
         description="JillBot is an open-source Discord bot written in Python by corndog#2974"
     )
     about_me.set_thumbnail(url="https://avatars.githubusercontent.com/u/101812777?v=4")
-    about_me.add_field(name="Prefix", value="!")
-    about_me.add_field(name="Commands", value="`hello`, `about`, `weather <location>`, `4panel`", inline=False)
+    about_me.add_field(name="Prefix", value="/")
+    about_me.add_field(name="Commands",
+                       value="`hello`, `about`, `weather <location>`, `4panel` , `make_qrcode`, `read_qrcode`",
+                       inline=False)
     await inter.response.send_message(embed=about_me)
 
 
 @jillbot.slash_command(
-    description="Does a trick with images uploaded to cdn.discordapp.com that makes them display 4 times")
+    description="Does a trick with image urls that makes them embed 4 times")
 async def funny(inter, link: str):
     if not link.startswith("https://"):
         await inter.response.send_message("Invalid image link - must start with https://")
@@ -57,11 +58,10 @@ async def funny(inter, link: str):
 @jillbot.slash_command(description="Displays a small weather report for the city provided.")
 async def weather(inter, city: str):
     # await inter.response.send_message(f"Getting weather for {city}...")
-
-    weather_data = libs.weather.get_weather(city)
+    weather_data = weather.get_weather(city)
 
     if weather_data == "API_Error":
-        await inter.response.send_message("API error - your request produced no suggestions.")
+        await inter.response.send_message(f"API error - could not find the city \"{city}\".")
 
     else:
         embed = disnake.Embed(title=f"Showing results for {weather_data['City']}, {weather_data['Country']}",
@@ -91,7 +91,7 @@ async def weather(inter, city: str):
 
 @jillbot.slash_command(description="Encode a string to QR code")
 async def make_qrcode(inter, string: str):
-    qr_code = libs.qr_codec.make_qr_code(string)
+    qr_code = make_qr_code(string)
     with io.BytesIO() as image_binary:
         qr_code.save(image_binary, 'PNG')
         image_binary.seek(0)
@@ -101,7 +101,7 @@ async def make_qrcode(inter, string: str):
 @jillbot.slash_command(description="Decode a QR code from an image URL")
 async def read_qrcode(inter, image_url: str):
     try:
-        decoded = libs.qr_codec.decode_qr_code(urlopen(image_url))
+        decoded = decode_qr_code(urlopen(image_url))
         await inter.response.send_message(decoded)
     except FileNotFoundError:
         await inter.response.send_message("Sorry, the QR code could not be read.")
