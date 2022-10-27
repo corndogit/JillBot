@@ -1,6 +1,7 @@
+import io
 import os
 import libs.weather
-
+import libs.qr_codec
 from libs.doc.weathercodes import weathercodes, decode_uv_index
 import disnake
 from disnake.ext import commands
@@ -83,6 +84,15 @@ async def weather(inter, city: str):
                         inline=True)
         embed.set_footer(text="Data collected from Met Office Weather DataHub")
         await inter.response.send_message(embed=embed)
+
+
+@jillbot.slash_command(description="Encode a string to QR code")
+async def qrcode(inter, string: str):
+    qr_code = libs.qr_codec.make_qr_code(string)
+    with io.BytesIO() as image_binary:
+        qr_code.save(image_binary, 'PNG')
+        image_binary.seek(0)
+        await inter.response.send_message(file=disnake.File(fp=image_binary, filename="qrcode.png"))
 
 
 jillbot.run(TOKEN)
