@@ -4,7 +4,11 @@ from PIL import Image
 
 
 def make_qr_code(data: str):
-    """| Turns string object into a QR code in PNG format"""
+    """
+    Turns string object into a QR code in PNG format.
+    :param data string to encode
+    :returns PilImage
+    """
     image = qrcode.make(data)
     return image
 
@@ -15,4 +19,4 @@ def decode_qr_code(data):
     try:
         return decode_qr[0].data.decode('utf-8')
     except IndexError:
-        return 'Unable to read QR code'
+        raise FileNotFoundError
